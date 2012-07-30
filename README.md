@@ -181,4 +181,4 @@ Sample:
 
 ## License
 
-TODO
+[MIT](NodeSSH/raw/master/LICENSE)
