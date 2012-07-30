@@ -2,6 +2,8 @@
 
 A lightweight SSH Client for Node.js.
 
+[![Build Status](https://secure.travis-ci.org/TotenDev/NodeSSH.png?branch=master)](http://travis-ci.org/TotenDev/NodeSSH)
+
 ## About
 
 NodeSSH is a SSH client for node.js. I would call it lightweight, but since it spawns subprocesses, this makes it heavyweight to me. It uses OpenSSH and expect. Make sure you have installed this software.
