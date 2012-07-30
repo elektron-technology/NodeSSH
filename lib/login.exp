@@ -1,32 +1,35 @@
-set timeout 30
+#!/usr/bin/expect
 
-#example of getting arguments passed from command line..
-#not necessarily the best practice for passwords though...
-set server [lindex $argv 0]
+set timeout 10
+set host [lindex $argv 0]
 set user [lindex $argv 1]
 set pass [lindex $argv 2]
+set port [lindex $argv 3]
+set certPath [lindex $argv 4]
 
-# connect to server via ssh, login, and su to root
-send_user "connecting to $server\n"
-spawn ssh $user@$server
 
-#login handles cases:
-#   login with keys (no user/pass)
-#   user/pass
-#   login with keys (first time verification)
+
+if {$certPath != "null"} {
+	set command "-i $certPath -p $port $user@$host -to ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o CheckHostIP=no -o NumberOfPasswordPrompts=1"
+} else {
+	set command "-p $port $user@$host -to ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o CheckHostIP=no -o NumberOfPasswordPrompts=1"
+}
+
+spawn ssh -p $port $user@$host -to ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o CheckHostIP=no -o NumberOfPasswordPrompts=1
+
 expect {
   "> " { }
   "$ " { }
   "# " { }
-  "assword:" { 
-        send "$pass\n" 
-        expect {
-          "> " { }
-          "$ " { }
-          "# " { }
-        }
+  "assword:" {
+			send "$pass\n"
+			expect {
+			  "> " { }
+			  "$ " { }
+			  "# " { }
+			}
   }
-  "(yes/no)? " { 
+  "(yes/no)? " {
         send "yes\n"
         expect {
           "> " { }
@@ -34,11 +37,18 @@ expect {
           "# " { }  
         }
   }
+  "y/N" {
+        send "y\n"
+        expect {
+          "> " { }
+          "$ " { }
+          "# " { }
+        }
+  }
   default {
-        send_user "Login failed\n"
+        send_user "Login failed"
         exit
   }
 }
-
-send_user "logged"
+send_user "Logged"
 interact

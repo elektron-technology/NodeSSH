@@ -1,18 +1,20 @@
 {
   "name": "NodeSSH",
   "description": "SSH Client for NodeJS",
-  "version": "0.5.0",
+  "version": "0.6.0-Alpha",
   "author": "tsmith",
-  "repository": "git://github.com/Trakkasure/NodeSSH.git",
+  "repository": "git@github.com:neiker/NodeSSH.git",
   "maintainers": [ 
-    { "name": "tsmith", "email": ""  },
-    { "name": "Brandon Myers", "email": "trakkasure@gmail.com" }
+    { "name": "Javier Alvarez", "email": "neiker@gmail.com" }
   ],
   "contributors": [ 
     { "name": "tsmith", "email": "" },
-    { "name": "Brandon Myers", "email": "trakkasure@gmail.com"}
+    { "name": "Brandon Myers", "email": "trakkasure@gmail.com"},
+    { "name": "Javier Alvarez", "email": "neiker@gmail.com" },
+    { "name": "TotenDev LDTA", "email": "support@totendev.com" },
+    { "name": "Gabriel Pacheco", "email": "gabriel@totendev.com" }
   ],
-  "keywords": ["ssh","net","expect"],
+  "keywords": ["ssh","sshclient","remote","cli","net","expect"],
   "main": "lib/index.js",
   "engines": { "node": ">= 0.2.0" }
 }
