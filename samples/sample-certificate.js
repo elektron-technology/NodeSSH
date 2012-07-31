@@ -1,5 +1,6 @@
 var credentials = require("./../DONOTCOMMIT.js")();
 var options = { host:credentials.TESTHost(), username:credentials.TESTUser(), password:credentials.TESTPass(), port:credentials.TESTPort() };
+//certificate:"/homeSync/gwdp/.ssh/id_rsa_key", port: 22 };
 //SSHClient
 var SSHClient = require("./../lib/index.js")(options);
 //Commands 
