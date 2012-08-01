@@ -8,9 +8,7 @@ node_js:
   - 0.7
   - 0.8
 script: 
-  - "node samples/execSample-certificate.js"
-  - "node samples/execSample.js"
-  - "node samples/sample.js"
+  - "node lib/index.js"
 notifications:
   irc:
     channels:
