@@ -1,7 +1,8 @@
 var credentials = require("./../DONOTCOMMIT.js")();
-var options = { host:credentials.TESTHost(), username:credentials.TESTUser(), password:credentials.TESTPass(), certificate:credentials.TESTCertificateFile(), port:credentials.TESTPort() };
+var options = { host:credentials.TESTHost(), username:credentials.TESTUser(), password:credentials.TESTPass(), port:credentials.TESTPort() };
 //SSHClient
 var SSHClient = require("./../lib/index.js")(options);
+var paused = false;
 //Commands 
 SSHClient.on('stderr', function(err) { console.log("Error on StdErr",err); });
 SSHClient.on('output', function(data,lastChunk) { 
@@ -10,8 +11,15 @@ SSHClient.on('output', function(data,lastChunk) {
 		SSHClient.close();
 	}
 	if (data) {
-		if (data.match("pwd")) { console.log("Command data->",data);
-		}else { console.log("Output data->",data); }
+		console.log("data->",data);
+		if (paused == false) {
+			paused = true;
+			setTimeout(function () { console.log("pause"); SSHClient.pauseOutput(); },10);
+			setTimeout(function () {
+				console.log("resuming");
+				SSHClient.resumeOutput();
+			},2000);	
+		}
 	}
 });
 //Connection
@@ -22,6 +30,6 @@ SSHClient.once('closed', function(addr,err) {
 });
 SSHClient.on("connected",function (host) {
 	console.log("Connected",host);
-	SSHClient.write("pwd");
+	SSHClient.write("ping -c 3 10.0.1.255");
 });
 SSHClient.connect();

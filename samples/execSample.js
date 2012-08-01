@@ -1,25 +1,23 @@
-var options = { host:"10.0.1.7", username:"USER", password:"PASS", port: 22 };
+var credentials = require("./../DONOTCOMMIT.js")();
+var options = { host:credentials.TESTHost(), username:credentials.TESTUser(), password:credentials.TESTPass(), port:credentials.TESTPort() };
 var SSHClient = require("./../lib/index.js")(options);
-//Command events
-SSHClient.on('input', function(data) {
-	console.log("input-> "+data);
+//Connection
+SSHClient.once('closed', function(addr,err) { 
+	if (err) {
+		console.log("Error on session",err); 
+	}else { console.log("SSH Session has being closed."); }
 });
-SSHClient.on('output', function(data) {
-	console.log("output-> "+data);
-});
-SSHClient.on('stderr', function(err) {
-	console.log("stderr-> "+err);
-});
-//Connections events
 SSHClient.on("connected",function (host) {
-	SSHClient.exec("pwd",function(data){
-		SSHClient.exec("ls -lha",function(data){ SSHClient.close(); });
+	console.log("Connected",host);
+	SSHClient.exec("pwd",function (data,lastChunk) {
+		if (lastChunk == true) {
+			console.log("Should close connection");
+			SSHClient.close();
+		}
+		if (data) {
+			if (data.match("pwd")) { console.log("Command data->",data);
+			}else { console.log("Output data->",data); }
+		}
 	});
-});
-SSHClient.once('closed', function(addr) {
-	console.log('closed-> '+addr);
-});
-SSHClient.on('error', function(addr,err) {
-	console.log("error-> "+addr,err);
 });
 SSHClient.connect();

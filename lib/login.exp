@@ -8,47 +8,78 @@ set port [lindex $argv 3]
 set certPath [lindex $argv 4]
 
 
-
 if {$certPath != "null"} {
-	set command "-i $certPath -p $port $user@$host -to ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o CheckHostIP=no -o NumberOfPasswordPrompts=1"
-} else {
-	set command "-p $port $user@$host -to ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o CheckHostIP=no -o NumberOfPasswordPrompts=1"
-}
-
-spawn ssh -p $port $user@$host -to ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o CheckHostIP=no -o NumberOfPasswordPrompts=1
-
-expect {
-  "> " { }
-  "$ " { }
-  "# " { }
-  "assword:" {
-			send "$pass\n"
+	spawn ssh -i $certPath -p $port $user@$host -to ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o CheckHostIP=no -o NumberOfPasswordPrompts=1
+	expect {
+		"> " { }
+		"$ " { }
+		"# " { }
+		"assword:" {
+				send "$pass\n"
+				expect {
+				  "> " { }
+				  "$ " { }
+				  "# " { }
+				}
+		}
+		"(yes/no)? " {
+			send "yes\n"
+			expect {
+			  "> " { }
+			  "$ " { }
+			  "# " { }  
+			}
+		}
+		"y/N" {
+			send "y\n"
 			expect {
 			  "> " { }
 			  "$ " { }
 			  "# " { }
 			}
-  }
-  "(yes/no)? " {
-        send "yes\n"
-        expect {
-          "> " { }
-          "$ " { }
-          "# " { }  
-        }
-  }
-  "y/N" {
-        send "y\n"
-        expect {
-          "> " { }
-          "$ " { }
-          "# " { }
-        }
-  }
-  default {
-        send_user "Login failed"
-        exit
-  }
+		}
+		default {
+			send_user "Login failed"
+			exit
+		}
+	}
+	send_user "Logged"
+	interact
+} else {
+	spawn ssh -p $port $user@$host -to ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o CheckHostIP=no -o NumberOfPasswordPrompts=1
+	expect {
+		"> " { }
+		"$ " { }
+		"# " { }
+		"assword:" {
+				send "$pass\n"
+				expect {
+				  "> " { }
+				  "$ " { }
+				  "# " { }
+				}
+		}
+		"(yes/no)? " {
+			send "yes\n"
+			expect {
+			  "> " { }
+			  "$ " { }
+			  "# " { }  
+			}
+		}
+		"y/N" {
+			send "y\n"
+			expect {
+			  "> " { }
+			  "$ " { }
+			  "# " { }
+			}
+		}
+		default {
+			send_user "Login failed"
+			exit
+		}
+	}
+	send_user "Logged"
+	interact
 }
-send_user "Logged"
-interact

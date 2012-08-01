@@ -3,7 +3,7 @@ var options = { host:credentials.TESTHost(), username:credentials.TESTUser(), pa
 //SSHClient
 var SSHClient = require("./../lib/index.js")(options);
 //Commands 
-SSHClient.on('stderr', function(err) { t.ok(false,"Error on StdErr",err); });
+SSHClient.on('stderr', function(err) { console.log("Error on StdErr",err); });
 SSHClient.on('output', function(data,lastChunk) { 
 	if (lastChunk == true) {
 		console.log("Should close connection");
