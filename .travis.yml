@@ -10,8 +10,7 @@ node_js:
 script: 
   - "node lib/index.js"
 notifications:
-  email:
-      - dev@totendev.com
+  email: dev@totendev.com
   irc:
     channels:
       - "irc.freenode.org#TotenDev"
