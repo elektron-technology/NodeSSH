@@ -3,6 +3,8 @@
 A lightweight SSH Client for Node.js.
 
 [![Build Status](https://secure.travis-ci.org/TotenDev/NodeSSH.png?branch=master)](http://travis-ci.org/TotenDev/NodeSSH)
+[![Code Climate](https://codeclimate.com/github/TotenDev/NodeSSH.png)](https://codeclimate.com/github/TotenDev/NodeSSH)
+
 
 ## About
 
