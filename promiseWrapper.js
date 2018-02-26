@@ -47,40 +47,61 @@ class SSH {
   constructor(options) {
     this.connection = null;
     this.options = options;
+    this.connection = require('./lib/index.js')(this.options);
+    this.connection.on('stderr', function(err) { console.log("Error on StdErr",err); });
+    // this.connection.on('output', function(data,lastChunk) { 
+	  //   // if (lastChunk === true) {
+		//   //   console.log("Should close connection");
+		//   //   //this.disconnect();
+	  //   // }
+    //     console.log('hello')
+	  //   if (data) {
+
+		//     if (data.match("pwd")) {
+    //       console.log("Command data->",data);
+		//     }else { console.log("Output data->",data); }
+	  //   }
+    // });
+    //Connection
+    this.connection.once('closed', function(addr,err) {
+	    if (err) {
+		    console.log("Error on session",err);
+	    }else { console.log("SSH Session has being closed."); }
+    });
   }
   connect() {
     return new Promise((resolve, reject) => {
-      this.connection = require('./lib/index.js')(this.options);
-      this.connection.on('stderr', function(err) { console.log("Error on StdErr",err); });
-      this.connection.on('output', function(data,lastChunk) { 
-	      if (lastChunk == true) {
-		      console.log("Should close connection");
-		      this.connection.close();
-	      }
-	      if (data) {
-		      if (data.match("pwd")) { console.log("Command data->",data);
-		                             }else { console.log("Output data->",data); }
-	      }
-      });
-      //Connection
-      this.connection.once('closed', function(addr,err) {
-	      if (err) {
-		      console.log("Error on session",err);
-	      }else { console.log("SSH Session has being closed."); }
-      });
+      this.connection.on('closed', reject);
       this.connection.on('connected',(host) => {
+        this.connection.removeListener('closed', reject);
         console.log('Were Connected',host);
-        this.connection.write('pwd');
+
+      });
+      this.connection.on('output', function(data,lastChunk) {
+	      if (data) {
+		      if (data.match("pwd")) {
+            console.log("Command data->",data);
+		      }else { console.log("Output data->",data); }
+	      }
         resolve();
       });
       this.connection.connect();
+      this.connection.write('pwd');
     });
+  }
+  disconnect() {
+    this.connection.close();
   }
 }
 
 
 var mySSH = new SSH(options);
-mySSH.connect();
+mySSH.connect()
+  .then((string) => {
+    mySSH.disconnect();
+  });
+
+
 
 
 //connect(options).
