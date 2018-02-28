@@ -49,20 +49,6 @@ class SSH {
     this.options = options;
     this.connection = require('./lib/index.js')(this.options);
     this.connection.on('stderr', function(err) { console.log("Error on StdErr",err); });
-    // this.connection.on('output', function(data,lastChunk) { 
-	  //   // if (lastChunk === true) {
-		//   //   console.log("Should close connection");
-		//   //   //this.disconnect();
-	  //   // }
-    //     console.log('hello')
-	  //   if (data) {
-
-		//     if (data.match("pwd")) {
-    //       console.log("Command data->",data);
-		//     }else { console.log("Output data->",data); }
-	  //   }
-    // });
-    //Connection
     this.connection.once('closed', function(addr,err) {
 	    if (err) {
 		    console.log("Error on session",err);
@@ -75,19 +61,28 @@ class SSH {
       this.connection.on('connected',(host) => {
         this.connection.removeListener('closed', reject);
         console.log('Were Connected',host);
-
-      });
-      this.connection.on('output', function(data,lastChunk) {
-	      if (data) {
-		      if (data.match("pwd")) {
-            console.log("Command data->",data);
-		      }else { console.log("Output data->",data); }
-	      }
         resolve();
       });
       this.connection.connect();
-      this.connection.write('pwd');
     });
+  }
+  write(value) {
+    return new Promise((resolve, reject) => {
+      console.log('in promise')
+      this.connection.on('output', (data,lastChunk) => {
+        console.log('in event')
+	      if (data) {
+		      if (data.match("pwd")) {
+            console.log("Command data->",data);
+		      }else {
+            console.log("Output data->",data);
+            resolve();
+          }
+	      }
+      });
+      this.connection.write(value);
+    });
+
   }
   disconnect() {
     this.connection.close();
@@ -97,6 +92,9 @@ class SSH {
 
 var mySSH = new SSH(options);
 mySSH.connect()
+  .then((string) => {
+    mySSH.write('pwd');
+  })
   .then((string) => {
     mySSH.disconnect();
   });
