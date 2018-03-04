@@ -1,13 +1,9 @@
-var credentials = require('./DONOTCOMMIT.js')();
-var options = {
-  host: credentials.TESTHost(),
-  username: credentials.TESTUser(),
-  password: credentials.TESTPass(),
-  port: credentials.TESTPort()
-};
+'use strict';
+const shellEscape = require('shell-escape');
 
 class SSH {
   constructor(options) {
+    this.connected = false;
     this.connection = null;
     this.options = options;
     this.connection = require('./lib/index.js')(this.options);
@@ -18,22 +14,35 @@ class SSH {
       this.connection.on('closed', reject);
       this.connection.on('connected',(host) => {
         this.connection.removeListener('closed', reject);
+        this.connected = true;
         resolve('Connected to host:', host);
       });
       this.connection.connect();
     });
   }
-  write(value) {
+  execCommand(value, options) {
     return new Promise((resolve, reject) => {
+      if (options.cwd) {
+        value = `cd ${shellEscape([options.cwd])} 1> /dev/null 2> /dev/null; ${value}`;
+      }
+      var wholeLine = '';
       this.connection.on('output', (data,lastChunk) => {
 	      if (data) {
-		      if (data.match("pwd")) {
-            console.log("Command data->",data);
-		      } else {
-            console.log("Output data->",data);
-            resolve('Saw output data');
-          }
-	      }
+          wholeLine += data;
+        } else {
+          if (lastChunk === true) {
+            this.connection.removeAllListeners('output');
+            if (wholeLine.indexOf(value) !== -1) {
+              console.log('$', value);
+              var res = wholeLine.replace(value, '');
+            } else {
+              console.error(`Expected ${value} to be present in ${wholeLine}`);
+            }
+            var result = {};
+            result.stdout = res;
+            resolve(result);
+	        }
+        }
       });
       this.connection.write(value);
     });
@@ -45,6 +54,7 @@ class SSH {
 	      if (err) {
 		      reject("Error on session",err);
 	      } else {
+          this.connection = null;
           resolve("SSH Session has being closed.");
         }
       });
@@ -54,16 +64,4 @@ class SSH {
   }
 }
 
-var mySSH = new SSH(options);
-mySSH.connect()
-  .then((string) => {
-    console.log(string)
-    return mySSH.write('pwd');
-  })
-  .then((string) => {
-    return mySSH.disconnect();
-  }).then((string) => {
-    console.log(string)
-  });
-
-
+module.exports = SSH;
