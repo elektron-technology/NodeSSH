@@ -1,3 +1,4 @@
+
 'use strict';
 
 const shellEscape = require('shell-escape');
@@ -13,6 +14,7 @@ class SSH {
   }
 
   //  connect(): Promise<this>
+
   connect() {
     return new Promise((resolve, reject) => {
       this.connection.on('closed', reject);
@@ -24,6 +26,7 @@ class SSH {
       this.connection.connect();
     });
   }
+
 
   // execCommand(command: string, options: { cwd: string, stdin: string } = {}): Promise<{ stdout: string}>
   execCommand(value, options) {
@@ -54,6 +57,7 @@ class SSH {
     });
 
   }
+
   // disconnet(): Promise<this>
   disconnect() {
     return new Promise((resolve, reject) => {
