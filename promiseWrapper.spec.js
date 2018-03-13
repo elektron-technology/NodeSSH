@@ -11,22 +11,25 @@ var options = {
 
 const SSH = require('./promiseWrapper');
 
-// Vague incomplete spec file, should be mocha ified
-var mySSH = new SSH(options);
-mySSH.connect()
-  .then((string) => {
-    console.log(string);
-    return mySSH.execCommand('pwd', {});
+describe('Wrapper sanity check', function(done) {
+  this.timeout(10000);
+
+  it('should connect to a hub, run a command and disconnect', function() {
+    var mySSH = new SSH(options);
+    mySSH.connect()
+      .then((result) => {
+        var options = {};
+        options.cwd = '/usr';
+        return mySSH.execCommand('ls', options);
+      })
+      .then((result) => {
+        console.log(result.stdout);
+        //assert(result.stdout === 'bin    local  sbin   share');
+        return mySSH.disconnect();
+      }).then((string) => {
+        assert(string === 'SSH session has been closed.');
+        console.log(string);
+        done();
+      });
   })
-  .then((result) => {
-    console.log(result.stdout);
-    var options = {};
-    options.cwd = '/usr';
-    return mySSH.execCommand('ls', options);
-  })
-  .then((result) => {
-    console.log(result.stdout);
-    return mySSH.disconnect();
-  }).then((string) => {
-    console.log(string);
-  });
+});

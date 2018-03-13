@@ -1,14 +1,18 @@
 'use strict';
+
 const shellEscape = require('shell-escape');
 
 class SSH {
+  // new SSH(options: host, username, password): Promise<this>
   constructor(options) {
     this.connected = false;
     this.connection = null;
     this.options = options;
     this.connection = require('./lib/index.js')(this.options);
-    this.connection.on('stderr', function(err) { console.log("Error on StdErr",err); });
+    this.connection.on('stderr', function(err) { console.error('Error on StdErr',err); });
   }
+
+  //  connect(): Promise<this>
   connect() {
     return new Promise((resolve, reject) => {
       this.connection.on('closed', reject);
@@ -20,6 +24,8 @@ class SSH {
       this.connection.connect();
     });
   }
+
+  // execCommand(command: string, options: { cwd: string, stdin: string } = {}): Promise<{ stdout: string}>
   execCommand(value, options) {
     return new Promise((resolve, reject) => {
       if (options.cwd) {
@@ -48,19 +54,19 @@ class SSH {
     });
 
   }
+  // disconnet(): Promise<this>
   disconnect() {
     return new Promise((resolve, reject) => {
       this.connection.once('closed', function(addr,err) {
 	      if (err) {
-		      reject("Error on session",err);
+		      throw TypeError("issues")
 	      } else {
           this.connection = null;
-          resolve("SSH Session has being closed.");
+          resolve('SSH session has being closed.');
         }
       });
       this.connection.close();
-    })
-
+    });
   }
 }
 
