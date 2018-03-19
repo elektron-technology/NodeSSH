@@ -25,7 +25,7 @@ describe('Wrapper sanity check', function(done) {
       .then((result) => {
         console.log(result.stdout);
         //assert(result.stdout === 'bin    local  sbin   share');
-        return mySSH.disconnect();
+        return mySSH.dispose();
       }).then((string) => {
         assert(string === 'SSH session has been closed.');
         console.log(string);
