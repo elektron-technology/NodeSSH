@@ -2,6 +2,7 @@
 'use strict';
 
 const shellEscape = require('shell-escape');
+const debug = require('debug')('promiseWrapper')
 
 class SSH {
   // new SSH(options: host, username, password): Promise<this>
@@ -19,6 +20,7 @@ class SSH {
     return new Promise((resolve, reject) => {
       this.connection.on('closed', reject);
       this.connection.on('connected',(host) => {
+        debug('Connecting to host:', host);
         this.connection.removeListener('closed', reject);
         this.connected = true;
         resolve('Connected to host:', host);
@@ -42,13 +44,14 @@ class SSH {
           if (lastChunk === true) {
             this.connection.removeAllListeners('output');
             if (wholeLine.indexOf(value) !== -1) {
-              console.log('$', value);
+              debug('$', value);
               var res = wholeLine.replace(value, '');
             } else {
               console.error(`Expected ${value} to be present in ${wholeLine}`);
             }
             var result = {};
             result.stdout = res;
+            debug(res);
             resolve(result);
 	        }
         }
@@ -59,13 +62,21 @@ class SSH {
   }
 
   // disconnet(): Promise<this>
-  disconnect() {
+  dispose() {
     return new Promise((resolve, reject) => {
-      this.connection.once('closed', function(addr,err) {
+      if (this.connection.connected === false) {
+        debug('Attempted to close defunct SSH connection');
+        resolve('SSH session already closed');
+        return;
+      }
+      this.connection.on('closed', function(addr,err) {
 	      if (err) {
-		      throw TypeError("issues")
+          debug('Error on SSH closed event!');
+          throw TypeError("issues");
+          reject();
 	      } else {
-          this.connection = null;
+          this.connected = false;
+          debug('ssh session has been closed');
           resolve('SSH session has being closed.');
         }
       });
