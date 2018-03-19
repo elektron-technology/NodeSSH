@@ -5,7 +5,13 @@ const shellEscape = require('shell-escape');
 const debug = require('debug')('promiseWrapper')
 
 class SSH {
-  // new SSH(options: host, username, password): Promise<this>
+  /**
+   * Constructor, called with options object that contains host, username and password
+   * for the connection. Does not connect to the host.
+   *
+   * new SSH(options: host, username, password)
+   * @returns {*|Promise.<TResult>}
+   */
   constructor(options) {
     this.connected = false;
     this.connection = null;
@@ -14,8 +20,13 @@ class SSH {
     this.connection.on('stderr', function(err) { console.error('Error on StdErr',err); });
   }
 
-  //  connect(): Promise<this>
 
+  /**
+   * Connect to the host specified in the constructor
+   *
+   * connect()
+   * @returns {*|Promise.<Tresult>}
+   */
   connect() {
     return new Promise((resolve, reject) => {
       this.connection.on('closed', reject);
@@ -29,8 +40,12 @@ class SSH {
     });
   }
 
-
-  // execCommand(command: string, options: { cwd: string, stdin: string } = {}): Promise<{ stdout: string}>
+  /**
+   * Run a command 'value' on the remote SSH connection, requires active connection
+   * @param value {command to be run}
+   * @param options {Options object, contains cwd (directory to execute value from)}
+   * @returns {*|Promise< stdout: string>}
+   */
   execCommand(value, options) {
     return new Promise((resolve, reject) => {
       if (options.cwd) {
@@ -60,8 +75,10 @@ class SSH {
     });
 
   }
-
-  // disconnet(): Promise<this>
+  /**
+   * Disconnects an SSH connection if one is active, returns harmlessly if one is not
+   * @returns {*|promise.<TResult>}
+   */
   dispose() {
     return new Promise((resolve, reject) => {
       if (this.connection.connected === false) {
