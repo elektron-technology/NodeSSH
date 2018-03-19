@@ -2,7 +2,7 @@
 'use strict';
 
 const shellEscape = require('shell-escape');
-const debug = require('debug')('promiseWrapper')
+const debug = require('debug')('promiseWrapper');
 
 class SSH {
   /**
@@ -13,13 +13,13 @@ class SSH {
    * @returns {*|Promise.<TResult>}
    */
   constructor(options) {
+    debug('created promise wrapper object');
     this.connected = false;
     this.connection = null;
     this.options = options;
     this.connection = require('./lib/index.js')(this.options);
     this.connection.on('stderr', function(err) { console.error('Error on StdErr',err); });
   }
-
 
   /**
    * Connect to the host specified in the constructor
@@ -57,10 +57,11 @@ class SSH {
           wholeLine += data;
         } else {
           if (lastChunk === true) {
+            let res = '';
             this.connection.removeAllListeners('output');
             if (wholeLine.indexOf(value) !== -1) {
               debug('$', value);
-              let res = wholeLine.replace(value, '');
+              res = wholeLine.replace(value, '');
             } else {
               console.error(`Expected ${value} to be present in ${wholeLine}`);
             }
