@@ -36,7 +36,7 @@ class SSH {
       if (options.cwd) {
         value = `cd ${shellEscape([options.cwd])} 1> /dev/null 2> /dev/null; ${value}`;
       }
-      var wholeLine = '';
+      let wholeLine = '';
       this.connection.on('output', (data,lastChunk) => {
 	      if (data) {
           wholeLine += data;
@@ -45,11 +45,11 @@ class SSH {
             this.connection.removeAllListeners('output');
             if (wholeLine.indexOf(value) !== -1) {
               debug('$', value);
-              var res = wholeLine.replace(value, '');
+              let res = wholeLine.replace(value, '');
             } else {
               console.error(`Expected ${value} to be present in ${wholeLine}`);
             }
-            var result = {};
+            let result = {};
             result.stdout = res;
             debug(res);
             resolve(result);
