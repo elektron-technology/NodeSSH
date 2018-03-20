@@ -11,7 +11,7 @@ var options = {
   colors: false
 };
 
-const SSH = require('./promiseWrapper');
+const SSH = require('../index.js');
 
 describe('Wrapper sanity check', function() {
   this.timeout(10000);
@@ -21,7 +21,7 @@ describe('Wrapper sanity check', function() {
    *
    */
   it('should connect to a hub, run a command and disconnect', function(done) {
-    var mySSH = new SSH(options);
+    var mySSH = new SSH.promiseWrapper(options);
     mySSH.connect()
       .then((result) => {
         var options = {};
@@ -35,6 +35,8 @@ describe('Wrapper sanity check', function() {
         assert.equal(string, 'SSH session has been closed successfully', 'ssh session has been closed');
         done();
       })
-      .catch(done);
+      .catch((err) => {
+        done(err);
+      });
   });
 });

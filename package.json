@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "tap test/",
-    "wrapperTest": "mocha promiseWrapper.spec.js"
+    "wrapperTest": "mocha test/promiseWrapper.spec.js"
   },
   "license": "MIT",
   "contributors": [
