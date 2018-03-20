@@ -82,8 +82,9 @@ class SSH {
    */
   dispose() {
     return new Promise((resolve, reject) => {
+      debug('Closing SSH connection')
       if (this.connection.connected === false) {
-        debug('Attempted to close defunct SSH connection');
+        debug('SSH connection already closed');
         resolve('SSH session already closed');
         return;
       }
@@ -94,8 +95,8 @@ class SSH {
           reject();
 	      } else {
           this.connected = false;
-          debug('ssh session has been closed');
-          resolve('SSH session has being closed.');
+          debug('SSH session has been closed successfully');
+          resolve('SSH session has been closed successfully');
         }
       });
       this.connection.close();
