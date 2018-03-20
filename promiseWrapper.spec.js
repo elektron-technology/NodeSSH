@@ -1,20 +1,26 @@
 'use strict';
 
+let assert = require('assert');
+
 var credentials = require('./DONOTCOMMIT.js')();
 var options = {
   host: credentials.TESTHost(),
   username: credentials.TESTUser(),
   password: credentials.TESTPass(),
   port: credentials.TESTPort(),
-  colors: true
+  colors: false
 };
 
 const SSH = require('./promiseWrapper');
 
-describe('Wrapper sanity check', function(done) {
+describe('Wrapper sanity check', function() {
   this.timeout(10000);
-
-  it('should connect to a hub, run a command and disconnect', function() {
+  /*
+   * Basic test that the SSH library can talk to the device
+   * configure DONOTCOMMIT.js with address username and password 
+   *
+   */
+  it('should connect to a hub, run a command and disconnect', function(done) {
     var mySSH = new SSH(options);
     mySSH.connect()
       .then((result) => {
@@ -23,13 +29,12 @@ describe('Wrapper sanity check', function(done) {
         return mySSH.execCommand('ls', options);
       })
       .then((result) => {
-        console.log(result.stdout);
-        //assert(result.stdout === 'bin    local  sbin   share');
+        assert.equal(result.stdout, 'bin    local  sbin   share');
         return mySSH.dispose();
       }).then((string) => {
-        assert(string === 'SSH session has been closed.');
-        console.log(string);
+        assert.equal(string, 'SSH session has been closed successfully', 'ssh session has been closed');
         done();
-      });
-  })
+      })
+      .catch(done);
+  });
 });
