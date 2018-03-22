@@ -11,7 +11,7 @@ var options = {
   colors: false
 };
 
-const SSH = require('../index.js');
+const SSH = require('../index.js')(options);
 
 describe('Wrapper sanity check', function() {
   this.timeout(10000);
@@ -21,7 +21,8 @@ describe('Wrapper sanity check', function() {
    *
    */
   it('should connect to a hub, run a command and disconnect', function(done) {
-    var mySSH = new SSH.promiseWrapper(options);
+    console.log(SSH);
+    var mySSH = new SSH.promisify(options);
     mySSH.connect()
       .then((result) => {
         var options = {};
