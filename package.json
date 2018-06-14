@@ -1,13 +1,13 @@
 {
-  "name": "NodeSSH",
-  "description": "SSH Client for NodeJS",
-  "version": "0.6.0-Alpha",
+  "name": "@checkit/NodeSSH",
+  "description": "SSH Wrapper client for NodeJS",
+  "version": "0.7.0-Alpha",
   "author": "tsmith",
-  "repository": "git@github.com:neiker/NodeSSH.git",
+  "repository": "git@github.com/elektron-technology/NodeSSH.git",
   "maintainers": [
     {
-      "name": "Javier Alvarez",
-      "email": "neiker@gmail.com"
+      "name": "Riaz Moola",
+      "email": "riaz.moola@elektron-technology.com"
     }
   ],
   "devDependencies": {
