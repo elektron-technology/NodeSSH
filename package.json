@@ -1,5 +1,5 @@
 {
-  "name": "@checkit/NodeSSH",
+  "name": "@checkit/nodessh",
   "description": "SSH Wrapper client for NodeJS",
   "version": "0.7.0-Alpha",
   "author": "tsmith",
