@@ -1,7 +1,7 @@
 {
   "name": "@checkit/nodessh",
   "description": "SSH Wrapper client for NodeJS",
-  "version": "0.8.0-alpha.2",
+  "version": "0.8.0-alpha.3",
   "author": "tsmith",
   "repository": "git@github.com/elektron-technology/NodeSSH.git",
   "maintainers": [
